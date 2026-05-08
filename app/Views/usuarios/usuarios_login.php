@@ -109,6 +109,9 @@
                         </div>
                     <?php } ?><!-- Se abre PHP, cerrando corchete de bloque condicional y se cierra PHP -->
                    
+                    <? reCaptcha2Html() ?> <!-- Se llama a la función que genera el HTML del reCAPTCHA v2 -->
+                    <? reCaptcha2Script() ?> <!-- Se llama a la función que genera el script necesario para el reCAPTCHA v2 -->
+                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-modern">Iniciar Sesión</button>
                     </div>

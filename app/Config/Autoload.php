@@ -90,6 +90,7 @@ class Autoload extends AutoloadConfig
      */
     public $helpers = [
         'seguridad',
-        'noSeguridad'
+        'noSeguridad',
+        'recaptcha'
     ];
 }
