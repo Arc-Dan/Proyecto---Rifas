@@ -109,7 +109,7 @@
                         </div>
                     <?php } ?><!-- Se abre PHP, cerrando corchete de bloque condicional y se cierra PHP -->
                    
-                    // Favor de ponerle echo o = a las funciones para que se imprima el resultado en el HTML -bri
+                    <!-- Favor de ponerle echo o = a las funciones para que se imprima el resultado en el HTML -bri -->
                     <? getWidget() ?> <!-- Se llama a la función que genera el HTML del reCAPTCHA v2 -->
                     <? getScriptTag() ?> <!-- Se llama a la función que genera el script necesario para el reCAPTCHA v2 -->
                     
