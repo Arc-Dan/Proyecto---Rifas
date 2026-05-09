@@ -29,4 +29,13 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    public static function recaptcha($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('recaptcha');
+        }
+
+        return new \PHPDevsr\Recaptcha\Recaptcha(config('Recaptcha'));
+    }
 }

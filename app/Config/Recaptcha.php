@@ -20,14 +20,14 @@ class Recaptcha extends BaseConfig
      *
      * @see http://www.google.com/recaptcha/admin
      */
-    public string $recaptchaSiteKey = '6Leh9NgsAAAAAH4L1w-9Gycik7-yQTrgJbyYAZ2L';
+    public string $recaptchaSiteKey;
 
     /**
      * Secret Key
      *
      * @see http://www.google.com/recaptcha/admin
      */
-    public string $recaptchaSecretKey = '6Leh9NgsAAAAAMBk2xDqmw9CljeIAgUQxlNTQM51';
+    public string $recaptchaSecretKey;
 
     /**
      * Language
@@ -35,4 +35,10 @@ class Recaptcha extends BaseConfig
      * @see http://www.google.com/recaptcha/admin
      */
     public string $recaptchaLang = 'es';
+
+    public function __construct()
+    {
+        $this->recaptchaSiteKey = env('recaptcha.recaptchaSiteKey', '');
+        $this->recaptchaSecretKey = env('recaptcha.recaptchaSecretKey', '');
+    }
 }
