@@ -14,9 +14,9 @@ function seguridad($rol =array()){
             }
 
         }
-        
+
         if($encontrado == false){
-            return redirect()->to('/usuarios'->with('msg','No tienes permisos para acceder a esta sección!'));
+            return redirect()->to('/usuarios')->with('msg','No tienes permisos para acceder a esta sección!');
         }
     }
 

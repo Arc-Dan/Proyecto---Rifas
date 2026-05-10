@@ -220,12 +220,6 @@ public function auth(){
     $email = $this->request->getPost("email");
     $contrasena = $this->request->getPost("contrasena");
 
-    // Validar reCAPTCHA
-    $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
-    if (!verifyResponse($recaptchaResponse)) {
-        return redirect()->back()->withInput()->with('msg', 'Por favor, completa el CAPTCHA.');
-    }
-
     $model = new UsuarioModel();
     #Retorna el primer usuario que encuentre con ese email
     $usuario = $model->where(["email=" => $email])->where(["status=" => "activo"])->first();

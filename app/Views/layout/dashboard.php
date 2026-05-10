@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIFAS  CHILAS  </title>
+    <title>RIFAS CHILAS </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
+
     <style>
         :root {
             --sidebar-width: 260px;
@@ -35,7 +36,7 @@
             max-width: var(--sidebar-width);
             background: #ffffff;
             min-height: 100vh;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
         }
@@ -67,7 +68,8 @@
             margin-right: 12px;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background-color: #f0f4ff;
             color: var(--primary-color);
         }
@@ -82,14 +84,14 @@
         .card {
             border: none;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
         }
 
         /* Botón de toggle hamburguesa */
         #sidebarCollapse {
             background: white;
             border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             padding: 8px 12px;
         }
@@ -99,102 +101,113 @@
             #sidebar {
                 margin-left: calc(-1 * var(--sidebar-width));
             }
+
             #sidebar.active {
                 margin-left: 0;
             }
         }
     </style>
 </head>
+
 <body>
 
-<div id="wrapper">
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h4 class="fw-bold text-primary mb-0">RIFAS <span class="text-dark">CHILAS</span></h4>
-        </div>
-        
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a href="/usuarios" class="nav-link active">
-                    <i class="bi bi-grid-1x2-fill"></i>
-                    <span>Usuarios</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span>Rifas</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-wallet2"></i>
-                    <span>Pagos</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Mensajes</span>
-                </a>
-            </li>
-        </ul>
+    <div id="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4 class="fw-bold text-primary mb-0">RIFAS <span class="text-dark">CHILAS</span></h4>
+            </div>
 
-        <div class="position-absolute bottom-0 w-20 p-3">
-            <a href="/usuarios/logout" class="nav-link text-danger">
-                <i class="bi bi-box-arrow-left"></i>
-                <span>Cerrar Sesión</span>
-            </a>
-        </div>
-    </nav>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="/usuarios" class="nav-link <?= url_is('usuarios*') ? 'active' : '' ?>">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <!-- El enlace de Rifas se ajusta según el rol del usuario -->
+                <li class="nav-item">
+                    <?php
+                    $rifasUrl = (session()->get('usuario.rol') === 'cliente') ? '/rifas' : '/rifas-dashboard';
+                    $isRifasActive = url_is('rifas*') || url_is('rifas-dashboard*');
+                    ?>
+                    <a href="<?= $rifasUrl ?>" class="nav-link <?= $isRifasActive ? 'active' : '' ?>">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Rifas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-wallet2"></i>
+                        <span>Pagos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-chat-dots"></i>
+                        <span>Mensajes</span>
+                    </a>
+                </li>
+            </ul>
 
-    <div id="content">
-        <nav class="navbar navbar-expand-lg mb-4">
-            <div class="container-fluid p-0">
-                <button type="button" id="sidebarCollapse" class="btn btn-light">
-                    <i class="bi bi-list"></i>
-                </button>
-                
-                <div class="ms-auto d-flex align-items-center">
-                    <div class="me-3 text-end d-none d-sm-block">
-                        <p class="mb-0 fw-bold"><?= session()->get('usuario.nombre')?></p>
-                        <small class="text-muted"><?= session()->get('usuario.email')?></small>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=4e73df&color=fff" class="rounded-circle" width="40">
-                </div>
+            <div class="position-absolute bottom-0 w-20 p-3">
+                <a href="/usuarios/logout" class="nav-link text-danger">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
             </div>
         </nav>
 
-        <div class="container-fluid p-0">
-            <h2 class="fw-bold mb-4">Panel de Control</h2>
-            
-          
+        <div id="content">
+            <nav class="navbar navbar-expand-lg mb-4">
+                <div class="container-fluid p-0">
+                    <button type="button" id="sidebarCollapse" class="btn btn-light">
+                        <i class="bi bi-list"></i>
+                    </button>
 
-            <div class="row g-4">
-                
-            <?= $this->renderSection('content') ?>
- 
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="me-3 text-end d-none d-sm-block">
+                            <p class="mb-0 fw-bold"><?= session()->get('usuario.nombre') ?></p>
+                            <small class="text-muted"><?= session()->get('usuario.email') ?></small>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=4e73df&color=fff"
+                            class="rounded-circle" width="40">
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-0">
+                <?php if (!url_is('rifas')): ?>
+                    <h2 class="fw-bold mb-4">Panel de Control</h2>
+                <?php endif; ?>
+
+
+
+                <div class="row g-4">
+
+                    <?= $this->renderSection('content') ?>
+
+                </div>
+
+
             </div>
-
-
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<script>
-    // Lógica para colapsar el menú
-    document.addEventListener("DOMContentLoaded", function() {
-        const toggleBtn = document.getElementById('sidebarCollapse');
-        const sidebar = document.getElementById('sidebar');
+    <script>
+        // Lógica para colapsar el menú
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.getElementById('sidebarCollapse');
+            const sidebar = document.getElementById('sidebar');
 
-        toggleBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
+            toggleBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('active');
+            });
         });
-    });
-</script>
+    </script>
 </body>
+
 </html>
