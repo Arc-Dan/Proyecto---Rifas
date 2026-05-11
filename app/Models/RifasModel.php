@@ -26,7 +26,7 @@ protected $allowedFields =[
     "imagen_promocional"
 ];
 
-protected $useTimestamps = true;
+protected $useTimestamps = false;
 protected $createdField = 'created_at';
 protected $updatedField = 'updated_at';
 

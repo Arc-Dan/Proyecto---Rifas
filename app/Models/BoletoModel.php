@@ -26,7 +26,7 @@ protected $allowedFields =[
     "fecha_compra"
 ];
 
-protected $useTimestamps = true;
+protected $useTimestamps = false;
 protected $createdField = 'created_at';
 protected $updatedField = 'updated_at';
 }

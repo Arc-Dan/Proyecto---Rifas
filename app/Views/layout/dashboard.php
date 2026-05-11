@@ -124,7 +124,7 @@
                         <span>Usuarios</span>
                     </a>
                 </li>
-                <!-- El enlace de Rifas se ajusta según el rol del usuario -->
+                <!--Detección de rol para redirigir al catálogo o dashboard-->
                 <li class="nav-item">
                     <?php
                     $rifasUrl = (session()->get('usuario.rol') === 'cliente') ? '/rifas' : '/rifas-dashboard';

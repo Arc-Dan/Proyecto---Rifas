@@ -118,10 +118,10 @@ $routes->group("rifas", function ($routes) {
  */
 
 $routes->group("boletos", function ($routes) {
-    # Ver boletos de una rifa específica
+    # Ver boletos de una rifa específica - Admins y Trabajadores
     $routes->get("rifa/(:num)", "BoletoController::poRifa/$1");
 
-    # Mostrar formulario para comprar boleto
+    # Mostrar formulario para comprar boleto - Clientes
     $routes->get("comprar/(:num)", "BoletoController::comprar/$1");
 
     # Procesar compra de boleto

@@ -7,9 +7,9 @@
             <h3 class="fw-bold mb-0">Gestión de Rifas</h3>
             <p class="text-muted">Administra las rifas activas y simula los sorteos.</p>
         </div>
-        <button class="btn btn-primary shadow-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalCrearRifa">
+        <a href="<?= base_url('rifas-dashboard/create') ?>" class="btn btn-primary shadow-sm px-4 py-2">
             <i class="bi bi-plus-lg me-2"></i>Nueva Rifa
-        </button>
+        </a>
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -27,28 +27,53 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="ps-4">
-                                <img src="https://via.placeholder.com/50" class="rounded-3" alt="rifa">
-                            </td>
-                            <td>
-                                <span class="fw-600 text-dark">Sorteo iPhone 15 Pro</span>
-                                <br><small class="text-muted">ID: #001</small>
-                            </td>
-                            <td><span class="badge bg-soft-primary text-primary font-weight-bold">$10.00</span></td>
-                            <td>Apple iPhone 15</td>
-                            <td>15 de Junio, 2026</td>
-                            <td class="text-end pe-4">
-                                <div class="btn-group shadow-sm">
-                                    <button class="btn btn-white btn-sm text-primary" title="Simular Sorteo"><i
-                                            class="bi bi-trophy-fill"></i></button>
-                                    <button class="btn btn-white btn-sm text-warning" title="Editar"><i
-                                            class="bi bi-pencil-square"></i></button>
-                                    <button class="btn btn-white btn-sm text-danger btn-eliminar" title="Eliminar"><i
-                                            class="bi bi-trash3"></i></button>
-                                </div>
-                            </td>
-                        </tr>
+                        <?php foreach ($rifas as $rifa) { ?>
+                            <tr>
+                                <td class="text-center ps-4" style="width: 150px;">
+                                    <div style="width: 120px; height: 100px; overflow: hidden; margin: 0 auto; background-color: #f8f9fa;"
+                                        class="rounded-3 shadow-sm d-flex align-items-center justify-content-center">
+                                        <?php if ($rifa["imagen_promocional"]) { ?>
+                                            <img src="<?= $rifa["imagen_promocional"]; ?>" alt="rifa"
+                                                style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+                                        <?php } else { ?>
+                                            <i class="bi bi-camera-video-off text-muted fs-4"></i>
+                                        <?php } ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-600 text-dark">
+                                        <?= $rifa["nombre"]; ?>
+                                    </span>
+                                    <br><small class="text-muted">ID: #<?= $rifa["id"]; ?></small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-soft-primary text-primary font-weight-bold">$
+                                        <?= $rifa["costo_boleto"]; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?= $rifa["descripcion"]; ?>
+                                </td>
+                                <td><?= $rifa["fecha_sorteo"]; ?></td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group shadow-sm">
+                                        <a href="<?= base_url('rifas-dashboard/' . $rifa['id']) ?>"
+                                            class="btn btn-white btn-sm text-primary" title="Ver Rifa"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="<?= base_url('rifas-dashboard/' . $rifa['id'] . '/edit') ?>"
+                                            class="btn btn-white btn-sm text-warning" title="Editar"><i
+                                                class="bi bi-pencil-square"></i></a>
+                                        <!-- Solo admin puede eliminar rifas -->
+                                        <?php if (session()->get('usuario.rol') == 'admin') { ?>
+                                            <button onClick="eliminarRifa(<?= $rifa['id']; ?>)"
+                                                class="btn btn-white btn-sm text-danger" title="Eliminar">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        <?php } ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -57,6 +82,24 @@
 </div>
 
 <script>
+    function eliminarRifa(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer y eliminará todos los boletos asociados.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirigir a la ruta de eliminación
+                window.location.href = "<?= base_url('rifas-dashboard/') ?>/" + id + "/delete";
+            }
+        })
+    }
+
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
         btn.addEventListener('click', function () {
             Swal.fire({

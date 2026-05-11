@@ -29,8 +29,11 @@ class RifasController extends BaseController
             return seguridad();
         }
 
-        $rifas = new RifasModel();
-        $data['rifas'] = $rifas->findAll();
+        $model = new RifasModel();
+
+        $rifas = $model->findAll();
+
+        $data['rifas'] = $rifas;
         return view('rifas/index', $data);
     }
 
@@ -42,8 +45,8 @@ class RifasController extends BaseController
             return seguridad();
         }
 
-        $rifas = new RifasModel();
-        $rifa = $rifas->find($id);
+        $model = new RifasModel();
+        $rifa = $model->find($id);
 
         if (!$rifa) {
             return redirect()->to('/rifas-dashboard')->with('error', 'Rifa no encontrada');
@@ -57,7 +60,7 @@ class RifasController extends BaseController
             "boletos" => $boletosList
         ];
 
-        return view("rifas/show", $data);
+        return view("rifas/rifas_show", $data);
     }
 
     #GET Mostrar formulario para crear rifa (VIEW)
@@ -67,7 +70,7 @@ class RifasController extends BaseController
         if (seguridad(['admin', 'trabajador'])) {
             return seguridad();
         }
-        return view("rifas/create");
+        return view("rifas/rifas_create");
     }
 
     #POST Guardar nueva rifa (REDIRECCIONA)
@@ -113,7 +116,7 @@ class RifasController extends BaseController
         }
 
         $data = ["rifa" => $rifa];
-        return view("rifas/edit", $data);
+        return view("rifas/rifas_edit", $data);
     }
 
     #POST Actualizar rifa (REDIRECCIONA)
@@ -240,14 +243,14 @@ class RifasController extends BaseController
             "boletos" => $boletosList
         ];
 
-        return view('rifas/show-publico', $data);
+        return view('rifas/catalogo', $data);
     }
 
     //FUNCIÓN AUXILIAR: Generar boletos automáticamente (00-10)
     private function generarBoletos($rifa_id)
     {
         $boletos = new BoletoModel();
-        for ($i = 0; $i <= 10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $numero = str_pad($i, 2, '0', STR_PAD_LEFT);
             $boletos->insert([
                 'rifa_id' => $rifa_id,

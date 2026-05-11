@@ -22,7 +22,7 @@ class BoletoController extends BaseController
         $rifas = new RifasModel();
         $data['rifa'] = $rifas->find($rifa_id);
 
-        return view('boletos/por-rifa', $data);
+        return view('boletos/index', $data);
     }
 
     #GET Mostrar formulario para comprar boleto (VIEW)

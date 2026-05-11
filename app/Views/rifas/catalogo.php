@@ -11,28 +11,41 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-md-6 col-lg-4">
-            <div class="card rifa-card shadow-lg h-100">
-                <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&w=800&q=80"
-                        class="card-img-top" alt="premio" style="height: 200px; object-fit: cover;">
-                    <div class="price-badge shadow-sm">$10.00 MXN</div>
-                </div>
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-primary-subtle text-primary px-3">Activa</span>
-                        <small class="text-muted"><i class="bi bi-calendar-event me-1"></i> 15 Jun</small>
+        <?php foreach ($rifas as $rifa) { ?>
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card rifa-card shadow-lg h-100">
+                    <div class="position-relative">
+                        <?php if ($rifa["imagen_promocional"]) { ?>
+                            <img src="<?= $rifa["imagen_promocional"]; ?>" class="card-img-top" alt="premio"
+                                style="height: 200px; object-fit: cover;">
+                        <?php } else { ?>
+                            <div class="bg-light d-flex align-items-center justify-content-center border-bottom"
+                                style="height: 200px; background-color: #e9ecef !important;">
+                                <div class="text-center text-muted">
+                                    <i class="bi bi-camera-video-off fs-1"></i>
+                                    <p class="small mb-0">Sin imagen</p>
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <div class="price-badge shadow-sm">$<?= $rifa["costo_boleto"]; ?> MXN</div>
                     </div>
-                    <h4 class="card-title fw-bold mb-3">Sorteo iPhone 15 Pro</h4>
-                    <p class="card-text text-muted small mb-4">Participa para ganar el último smartphone de Apple.
-                        Solo 11 boletos disponibles.</p>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary-subtle text-primary px-3">Activa</span>
+                            <small class="text-muted"><i class="bi bi-calendar-event me-1"></i>
+                                <?= date('d M', strtotime($rifa["fecha_sorteo"])); ?></small>
+                        </div>
+                        <h4 class="card-title fw-bold mb-3"><?= $rifa["nombre"]; ?></h4>
+                        <p class="card-text text-muted small mb-4"><?= $rifa["descripcion"]; ?></p>
 
-                    <a href="/rifas/ver/1" class="btn btn-buy btn-primary w-100 shadow">
-                        <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
-                    </a>
+                        <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
+                            class="btn btn-buy btn-primary w-100 shadow">
+                            <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php } ?>
     </div>
 </div>
 
