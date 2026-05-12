@@ -189,6 +189,76 @@ class RifasController extends BaseController
         }
 
         $boletos = new BoletoModel();
+        $boletosPagados = $boletos->where('rifa_id', $id)
+                                ->where('estado', 'pagado')
+                                ->findAll();
+
+        if (count($boletosPagados) < 3) {
+            return redirect()->to('/rifas-dashboard/' . $id)
+                            ->with('error', 'No hay suficientes boletos pagados (mínimo 3)');
+        }
+
+        // Seleccionar 3 ganadores aleatorios
+        $indices = array_rand($boletosPagados, 3);
+        $resultados = ["primero", "segundo", "tercero"];
+        $ganadoresIds = [];
+
+        foreach ($indices as $i => $index) {
+            $ganadorId = $boletosPagados[$index]['id'];
+            $ganadoresIds[] = $ganadorId;
+            $boletos->update($ganadorId, ['resultado' => $resultados[$i]]);
+        }
+
+        // Marcar a los perdedores como 'ninguno' para evitar posibles ambigüedades
+        foreach ($boletosPagados as $boleto) {
+            if (!in_array($boleto['id'], $ganadoresIds)) {
+                $boletos->update($boleto['id'], ['resultado' => 'ninguno']);
+            }
+        }
+
+        // Redirigir a la vista de resultados
+        return redirect()->to('/rifas-dashboard/' . $id . '/resultados')
+                        ->with('success', 'Sorteo realizado exitosamente');
+    }
+
+    public function resultados($id)
+    {
+        if (seguridad(['admin', 'trabajador'])) {
+            return seguridad();
+        }
+
+        $rifas = new RifasModel();
+        $boletos = new BoletoModel();
+
+        $rifa = $rifas->find($id);
+        if (!$rifa) {
+            return redirect()->to('/rifas-dashboard')->with('error', 'Rifa no encontrada');
+        }
+
+        $data = [
+            'rifa' => $rifa,
+            'boletos' => $boletos->where('rifa_id', $id)->findAll()
+        ];
+
+        return view('rifas/rifas_resultados', $data);
+    }
+
+
+    /*
+    public function simular($id)
+    {
+        if (seguridad(['admin', 'trabajador'])) {
+            return seguridad();
+        }
+
+        $rifas = new RifasModel();
+        $rifa = $rifas->find($id);
+
+        if (!$rifa) {
+            return redirect()->to('/rifas-dashboard')->with('error', 'Rifa no encontrada');
+        }
+
+        $boletos = new BoletoModel();
         $boletosPagados = $boletos->where('rifa_id', $id)->where('estado', 'pagado')->findAll();
 
         if (count($boletosPagados) < 3) {
@@ -206,7 +276,7 @@ class RifasController extends BaseController
 
         return redirect()->to('/rifas-dashboard/' . $id)->with('success', 'Sorteo realizado exitosamente con ganadores aleatorios');
     }
-
+*/
     #GET Ver rifas públicas (con login requerido)
     # route: /rifas-publico
     public function publico()

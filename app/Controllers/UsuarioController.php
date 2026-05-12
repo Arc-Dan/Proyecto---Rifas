@@ -190,7 +190,7 @@ class UsuarioController extends BaseController
         }
 
         if ($this->request->getPost("contrasena")) {
-            $datos["contrasena"] = pasword_hash($this->request->getPost("contrasena"), PASSWORD_DEFAULT);
+            $datos["contrasena"] = password_hash($this->request->getPost("contrasena"), PASSWORD_DEFAULT);
         }
 
         $model->update($id, $datos);
@@ -251,8 +251,8 @@ class UsuarioController extends BaseController
 
         $model = new UsuarioModel();
         #Retorna el primer usuario que encuentre con ese email
-        $usuario = $model->where(["email=" => $email])->where(["status=" => "activo"])->first();
-        #$usuario = $model->where("email",$email)->where("status","activo")->first();
+        #$usuario = $model->where(["email=" => $email])->where(["status=" => "activo"])->first();
+        $usuario = $model->where("email", $email)->where("status", "activo")->first();
 
         #Validar contraseña
         if ($usuario && password_verify($contrasena, $usuario["password"])) {

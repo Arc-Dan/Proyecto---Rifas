@@ -93,7 +93,9 @@ $routes->group("rifas-dashboard", function ($routes) {
 
     # ADMIN/TRABAJADOR: Realizar sorteo automático (genera ganadores aleatorios)
     $routes->post("(:num)/simular", "RifasController::simular/$1");
-
+    
+    # ADMIN/TRABAJADOR: Ver resultados del sorteo
+    $routes->get("(:num)/resultados", "RifasController::resultados/$1");
 });
 
 /**
