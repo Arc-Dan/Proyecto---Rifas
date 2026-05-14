@@ -23,7 +23,8 @@ protected $allowedFields =[
     "costo_boleto",
     "fecha_sorteo",
     "premio",
-    "imagen_promocional"
+    "imagen_promocional",
+    "estado"
 ];
 
 protected $useTimestamps = false;

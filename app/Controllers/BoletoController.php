@@ -75,7 +75,7 @@ class BoletoController extends BaseController
 
         $boletos->update($boleto_id, $data);
 
-        return redirect()->to('/rifas/' . $boleto['rifa_id'])->with('success', 'Boleto comprado exitosamente');
+        return redirect()->to('/boletos/rifa/' . $boleto['rifa_id'])->with('success', 'Boleto comprado exitosamente');
     }
 
     #GET Mostrar mis boletos comprados (VIEW)

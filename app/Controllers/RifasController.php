@@ -189,6 +189,13 @@ class RifasController extends BaseController
         }
 
         $boletos = new BoletoModel();
+
+        // Evitar simular si la rifa ya tiene ganadores
+        if (rifa_terminada_por_id($id)) {
+            return redirect()->to('/rifas-dashboard/' . $id)
+                            ->with('error', 'La rifa ya fue simulada');
+        }
+
         $boletosPagados = $boletos->where('rifa_id', $id)
                                 ->where('estado', 'pagado')
                                 ->findAll();
@@ -206,15 +213,16 @@ class RifasController extends BaseController
         foreach ($indices as $i => $index) {
             $ganadorId = $boletosPagados[$index]['id'];
             $ganadoresIds[] = $ganadorId;
-            $boletos->update($ganadorId, ['resultado' => $resultados[$i]]);
+            (new BoletoModel())->update($ganadorId, ['resultado' => $resultados[$i]]);
         }
 
         // Marcar a los perdedores como 'ninguno' para evitar posibles ambigüedades
         foreach ($boletosPagados as $boleto) {
             if (!in_array($boleto['id'], $ganadoresIds)) {
-                $boletos->update($boleto['id'], ['resultado' => 'ninguno']);
+                (new BoletoModel())->update($boleto['id'], ['resultado' => 'ninguno']);
             }
         }
+        //Marcar rifa como finalizada
 
         // Redirigir a la vista de resultados
         return redirect()->to('/rifas-dashboard/' . $id . '/resultados')
@@ -223,7 +231,7 @@ class RifasController extends BaseController
 
     public function resultados($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
+        if (seguridad(['admin', 'trabajador', 'cliente'])) {
             return seguridad();
         }
 
@@ -298,23 +306,9 @@ class RifasController extends BaseController
             return seguridad();
         }
 
-        $rifas = new RifasModel();
-        $rifa = $rifas->find($id);
-
-        if (!$rifa) {
-            return redirect()->to('/rifas')->with('error', 'Rifa no disponible');
-        }
-
-        $boletos = new BoletoModel();
-        $boletosList = $boletos->where('rifa_id', $id)->findAll();
-
-        $data = [
-            "rifa" => $rifa,
-            "boletos" => $boletosList
-        ];
-
-        return view('rifas/catalogo', $data);
+        return redirect()->to('/boletos/rifa/' . $id);
     }
+
 
     //FUNCIÓN AUXILIAR: Generar boletos automáticamente (00-10)
     private function generarBoletos($rifa_id)

@@ -206,6 +206,25 @@
             toggleBtn.addEventListener('click', function () {
                 sidebar.classList.toggle('active');
             });
+
+            // Mostrar alertas de SweetAlert2 basadas en flashdata
+            <?php if (session()->getFlashdata('success')): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            <?php endif; ?>
+            <?php if (session()->getFlashdata('error')): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Error!',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                    confirmButtonColor: '#4e73df'
+                });
+            <?php endif; ?>
         });
     </script>
 </body>

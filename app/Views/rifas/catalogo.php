@@ -30,18 +30,28 @@
                         <div class="price-badge shadow-sm">$<?= $rifa["costo_boleto"]; ?> MXN</div>
                     </div>
                     <div class="card-body p-4">
+                        <?php $rifaFinalizada = rifa_terminada_por_id($rifa['id']); ?>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary-subtle text-primary px-3">Activa</span>
+                            <span class="badge <?= $rifaFinalizada ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary' ?> px-3">
+                                <?= $rifaFinalizada ? 'Finalizada' : 'Activa' ?>
+                            </span>
                             <small class="text-muted"><i class="bi bi-calendar-event me-1"></i>
                                 <?= date('d M', strtotime($rifa["fecha_sorteo"])); ?></small>
                         </div>
                         <h4 class="card-title fw-bold mb-3"><?= $rifa["nombre"]; ?></h4>
                         <p class="card-text text-muted small mb-4"><?= $rifa["descripcion"]; ?></p>
 
-                        <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
-                            class="btn btn-buy btn-primary w-100 shadow">
-                            <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
-                        </a>
+                        <?php if ($rifaFinalizada): ?>
+                            <a href="<?= base_url('rifas-dashboard/' . $rifa['id'] . '/resultados') ?>"
+                                class="btn btn-view-results btn-danger w-100 shadow">
+                                <i class="bi bi-trophy me-2"></i>Ver Resultados
+                            </a>
+                        <?php else: ?>
+                            <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
+                                class="btn btn-buy btn-primary w-100 shadow">
+                                <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -84,8 +94,8 @@
         color: #4e73df;
     }
 
-    .btn-buy {
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    .btn-view-results {
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
         border: none;
         border-radius: 12px;
         font-weight: 600;
