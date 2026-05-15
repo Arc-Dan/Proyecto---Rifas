@@ -12,8 +12,8 @@ class BoletoController extends BaseController
     # route: /boletos/rifa/(:num)
     public function poRifa($rifa_id)
     {
-        if (seguridad(['admin', 'trabajador', 'cliente'])) {
-            return seguridad();
+        if ($redirect = seguridad(['admin', 'trabajador', 'cliente'])) {
+            return $redirect;
         }
 
         $boletos = new BoletoModel();
@@ -29,8 +29,8 @@ class BoletoController extends BaseController
     # route: /boletos/comprar/(:num)
     public function comprar($boleto_id)
     {
-        if (seguridad(['cliente'])) {
-            return seguridad();
+        if ($redirect = seguridad(['cliente'])) {
+            return $redirect;
         }
 
         $boletos = new BoletoModel();
@@ -56,8 +56,8 @@ class BoletoController extends BaseController
     # route: /boletos/procesar-compra/(:num)
     public function procesarCompra($boleto_id)
     {
-        if (seguridad(['cliente'])) {
-            return seguridad();
+        if ($redirect = seguridad(['cliente'])) {
+            return $redirect;
         }
 
         $boletos = new BoletoModel();
@@ -91,8 +91,8 @@ class BoletoController extends BaseController
     # route: /boletos/mis-boletos
     public function misboletos()
     {
-        if (seguridad(['cliente'])) {
-            return seguridad();
+        if ($redirect = seguridad(['cliente'])) {
+            return $redirect;
         }
 
         $boletos = new BoletoModel();

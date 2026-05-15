@@ -25,14 +25,10 @@ class UsuarioController extends BaseController
     public function index()
     {
         //Validar existencia de sesión con helper "seguridad" en autoload
-        if (seguridad()) {
-            return seguridad();
-        }
+        if ($redirect = seguridad()) { return $redirect; }
 
         // Solo admin y trabajador pueden ver la lista de todos los usuarios
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $model = new UsuarioModel();
 
@@ -52,26 +48,30 @@ class UsuarioController extends BaseController
 #/(:num) 
     public function show($id)
     {
-        if (seguridad()) {
-            return seguridad();
+        if ($redirect = seguridad()) { return $redirect; }
+
+        // Si es cliente, solo puede ver su propio ID
+        if (session()->get('usuario.rol') === 'cliente' && session()->get('usuario.id') != $id) {
+            return redirect()->to('/rifas');
         }
 
         $model = new UsuarioModel();
         $usuario = $model->find($id);
 
+        if (!$usuario) {
+            return redirect()->to('/rifas');
+        }
+
         $data = array("usuario" => $usuario);
 
         return view("usuarios/usuarios_show", $data);
-
     }
 
     #GET mostrar formulario para agregar usuario (VIEW)
 #/create 
     public function create()
     {
-        if (seguridad()) {
-            return seguridad();
-        }
+        if ($redirect = seguridad()) { return $redirect; }
         return view("usuarios/usuarios_create");
     }
 
@@ -79,9 +79,7 @@ class UsuarioController extends BaseController
 #/store 
     public function store()
     {
-        if (seguridad()) {
-            return seguridad();
-        }
+        if ($redirect = seguridad()) { return $redirect; }
 
         // 1.instanciar modelo para agregar usuario model para conectarnos a la DB
         $model = new UsuarioModel();
@@ -159,9 +157,7 @@ class UsuarioController extends BaseController
 #/edit/(:num) 
     public function edit($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
         //Crear instancia del modelo
         $model = new UsuarioModel();
 
@@ -177,9 +173,7 @@ class UsuarioController extends BaseController
 #/update/(:num) 
     public function update($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
         $model = new UsuarioModel();
 
         #Se declara array vacío
@@ -206,9 +200,7 @@ class UsuarioController extends BaseController
 
     public function delete($id)
     {
-        if (seguridad(['admin'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin'])) { return $redirect; }
         $model = new UsuarioModel();
         $model->delete($id);
         return redirect()->to('/usuarios')->with('msg', "Usuario $id eliminado!");
@@ -218,9 +210,7 @@ class UsuarioController extends BaseController
 #/login
     public function login()
     {
-        if (noSeguridad()) {
-            return noSeguridad();
-        }
+        if ($redirect = noSeguridad()) { return $redirect; }
         return view("usuarios/usuarios_login");
     }
 

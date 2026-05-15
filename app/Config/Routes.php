@@ -9,6 +9,14 @@ use CodeIgniter\Router\RouteCollection;
 # "URL" , "Archivo Controlador PHP:: funcion" 
 $routes->get('/', 'Home::index');
 
+$routes->set404Override(function() {
+    if (!session()->has('usuario')) {
+        header('Location: ' . base_url('usuarios/login'));
+        exit;
+    }
+    header('Location: ' . base_url('rifas'));
+    exit;
+});
 
 $routes->get('/saludar', 'Home::saludar');
 

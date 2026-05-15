@@ -23,7 +23,8 @@
     <?php endif; ?>
 
     <div class="d-flex align-items-center mb-4 pb-3 border-b">
-        <a href="<?= base_url($esCliente ? 'rifas' : 'rifas-dashboard/' . $rifa['id']) ?>" class="btn btn-white text-primary me-3 shadow-sm rounded-circle"
+        <a href="<?= base_url($esCliente ? 'rifas' : 'rifas-dashboard/' . $rifa['id']) ?>"
+            class="btn btn-white text-primary me-3 shadow-sm rounded-circle"
             style="width: 40px; height: 40px; padding: 7px;">
             <i class="bi bi-arrow-left"></i>
         </a>
@@ -96,8 +97,8 @@
                         </div>
                     </div>
 
-                    <?php 
-                    $esCliente = session()->get('usuario.rol') === 'cliente'; 
+                    <?php
+                    $esCliente = session()->get('usuario.rol') === 'cliente';
                     $usuarioId = session()->get('usuario.id');
                     $yaTieneBoleto = false;
                     $numeroBoletoComprado = null;
@@ -118,7 +119,9 @@
                             <i class="bi bi-check-circle-fill fs-4 me-3"></i>
                             <div>
                                 <h6 class="fw-bold mb-1">¡Ya tienes un boleto!</h6>
-                                <p class="mb-0 small">Has comprado el boleto <strong>#<?= str_pad($numeroBoletoComprado, 2, '0', STR_PAD_LEFT) ?></strong>. Solo se permite un boleto por cliente.</p>
+                                <p class="mb-0 small">Has comprado el boleto
+                                    <strong>#<?= str_pad($numeroBoletoComprado, 2, '0', STR_PAD_LEFT) ?></strong>. Solo se
+                                    permite un boleto por cliente.</p>
                             </div>
                         </div>
                     <?php endif; ?>

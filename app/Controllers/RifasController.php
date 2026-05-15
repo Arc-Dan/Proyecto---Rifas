@@ -25,9 +25,7 @@ class RifasController extends BaseController
     public function index()
     {
         // validar sesión con helper "seguridad" en autoload
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $model = new RifasModel();
 
@@ -41,9 +39,7 @@ class RifasController extends BaseController
     # route: /rifas/(:num)
     public function show($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $model = new RifasModel();
         $rifa = $model->find($id);
@@ -67,9 +63,7 @@ class RifasController extends BaseController
     # route: /rifas/create
     public function create()
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
         return view("rifas/rifas_create");
     }
 
@@ -77,8 +71,18 @@ class RifasController extends BaseController
     # route: /rifas/store
     public function store()
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
+
+        $reglas = [
+            'nombre' => 'required|min_length[3]',
+            'descripcion' => 'required',
+            'costo_boleto' => 'required|numeric',
+            'fecha_sorteo' => 'required|valid_date',
+            'premio' => 'required'
+        ];
+
+        if (!$this->validate($reglas)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $rifas = new RifasModel();
@@ -104,9 +108,7 @@ class RifasController extends BaseController
     # route: /rifas/(:num)/edit
     public function edit($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $rifa = $rifas->find($id);
@@ -123,8 +125,18 @@ class RifasController extends BaseController
     # route: /rifas/(:num)/update
     public function update($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
+
+        $reglas = [
+            'nombre' => 'required|min_length[3]',
+            'descripcion' => 'required',
+            'costo_boleto' => 'required|numeric',
+            'fecha_sorteo' => 'required|valid_date',
+            'premio' => 'required'
+        ];
+
+        if (!$this->validate($reglas)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $rifas = new RifasModel();
@@ -152,9 +164,7 @@ class RifasController extends BaseController
     # route: /rifas/(:num)/delete
     public function delete($id)
     {
-        if (seguridad(['admin'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $rifa = $rifas->find($id);
@@ -177,9 +187,7 @@ class RifasController extends BaseController
     # route: /rifas/(:num)/simular
     public function simular($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $rifa = $rifas->find($id);
@@ -193,16 +201,16 @@ class RifasController extends BaseController
         // Evitar simular si la rifa ya tiene ganadores
         if (rifa_terminada_por_id($id)) {
             return redirect()->to('/rifas-dashboard/' . $id)
-                            ->with('error', 'La rifa ya fue simulada');
+                ->with('error', 'La rifa ya fue simulada');
         }
 
         $boletosPagados = $boletos->where('rifa_id', $id)
-                                ->where('estado', 'pagado')
-                                ->findAll();
+            ->where('estado', 'pagado')
+            ->findAll();
 
         if (count($boletosPagados) < 3) {
             return redirect()->to('/rifas-dashboard/' . $id)
-                            ->with('error', 'No hay suficientes boletos pagados (mínimo 3)');
+                ->with('error', 'No hay suficientes boletos pagados (mínimo 3)');
         }
 
         // Seleccionar 3 ganadores aleatorios
@@ -226,14 +234,12 @@ class RifasController extends BaseController
 
         // Redirigir a la vista de resultados
         return redirect()->to('/rifas-dashboard/' . $id . '/resultados')
-                        ->with('success', 'Sorteo realizado exitosamente');
+            ->with('success', 'Sorteo realizado exitosamente');
     }
 
     public function resultados($id)
     {
-        if (seguridad(['admin', 'trabajador', 'cliente'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador', 'cliente'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $boletos = new BoletoModel();
@@ -255,9 +261,7 @@ class RifasController extends BaseController
     /*
     public function simular($id)
     {
-        if (seguridad(['admin', 'trabajador'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $rifa = $rifas->find($id);
@@ -289,9 +293,7 @@ class RifasController extends BaseController
     # route: /rifas-publico
     public function publico()
     {
-        if (seguridad(['admin', 'trabajador', 'cliente'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador', 'cliente'])) { return $redirect; }
 
         $rifas = new RifasModel();
         $data['rifas'] = $rifas->findAll();
@@ -302,9 +304,7 @@ class RifasController extends BaseController
     # route: /rifas-publico/(:num)
     public function showPublico($id)
     {
-        if (seguridad(['admin', 'trabajador', 'cliente'])) {
-            return seguridad();
-        }
+        if ($redirect = seguridad(['admin', 'trabajador', 'cliente'])) { return $redirect; }
 
         return redirect()->to('/boletos/rifa/' . $id);
     }
