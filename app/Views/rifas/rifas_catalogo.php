@@ -27,19 +27,27 @@
                                 </div>
                             </div>
                         <?php } ?>
-                        <div class="price-badge shadow-sm">$<?= $rifa["costo_boleto"]; ?> MXN</div>
+                        <div class="price-badge shadow-sm">$
+                            <?= $rifa["costo_boleto"]; ?> MXN
+                        </div>
                     </div>
                     <div class="card-body p-4">
                         <?php $rifaFinalizada = rifa_terminada_por_id($rifa['id']); ?>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge <?= $rifaFinalizada ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary' ?> px-3">
+                            <span
+                                class="badge <?= $rifaFinalizada ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary' ?> px-3">
                                 <?= $rifaFinalizada ? 'Finalizada' : 'Activa' ?>
                             </span>
                             <small class="text-muted"><i class="bi bi-calendar-event me-1"></i>
-                                <?= date('d M', strtotime($rifa["fecha_sorteo"])); ?></small>
+                                <?= date('d M', strtotime($rifa["fecha_sorteo"])); ?>
+                            </small>
                         </div>
-                        <h4 class="card-title fw-bold mb-3"><?= $rifa["nombre"]; ?></h4>
-                        <p class="card-text text-muted small mb-4"><?= $rifa["descripcion"]; ?></p>
+                        <h4 class="card-title fw-bold mb-3">
+                            <?= $rifa["nombre"]; ?>
+                        </h4>
+                        <p class="card-text text-muted small mb-4">
+                            <?= $rifa["descripcion"]; ?>
+                        </p>
 
                         <?php if ($rifaFinalizada): ?>
                             <a href="<?= base_url('rifas-dashboard/' . $rifa['id'] . '/resultados') ?>"
@@ -47,10 +55,36 @@
                                 <i class="bi bi-trophy me-2"></i>Ver Resultados
                             </a>
                         <?php else: ?>
-                            <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
-                                class="btn btn-buy btn-primary w-100 shadow">
-                                <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
-                            </a>
+                            <?php
+                            $participando = false;
+                            $esAdminOTra = in_array(session()->get('usuario.rol'), ['admin', 'trabajador']);
+
+                            if (session()->get('usuario.rol') === 'cliente') {
+                                $boletoModel = new \App\Models\BoletoModel();
+                                $yaCompro = $boletoModel->where('rifa_id', $rifa['id'])
+                                    ->where('cliente_id', session()->get('usuario.id'))
+                                    ->where('estado', 'pagado')
+                                    ->first();
+                                if ($yaCompro)
+                                    $participando = true;
+                            }
+                            ?>
+
+                            <?php if ($participando): ?>
+                                <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
+                                    class="btn btn-buy btn-warning text-dark w-100 shadow fw-bold">
+                                    <i class="bi bi-hourglass-split me-2"></i>Esperando resultados
+                                </a>
+                            <?php else: ?>
+                                <a href="<?= base_url('boletos/rifa/' . $rifa['id']) ?>"
+                                    class="btn btn-buy btn-primary w-100 shadow">
+                                    <?php if ($esAdminOTra): ?>
+                                        <i class="bi bi-eye me-2"></i>Visitar Rifa
+                                    <?php else: ?>
+                                        <i class="bi bi-ticket-perforated me-2"></i>Comprar Boleto
+                                    <?php endif; ?>
+                                </a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>

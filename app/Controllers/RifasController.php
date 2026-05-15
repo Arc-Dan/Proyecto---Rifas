@@ -34,7 +34,7 @@ class RifasController extends BaseController
         $rifas = $model->findAll();
 
         $data['rifas'] = $rifas;
-        return view('rifas/index', $data);
+        return view('rifas/rifas_index', $data);
     }
 
     #GET Mostrar rifa específica {id} (VIEW)
@@ -295,7 +295,7 @@ class RifasController extends BaseController
 
         $rifas = new RifasModel();
         $data['rifas'] = $rifas->findAll();
-        return view('rifas/catalogo', $data);
+        return view('rifas/rifas_catalogo', $data);
     }
 
     #GET Ver rifa pública específica (con login requerido)

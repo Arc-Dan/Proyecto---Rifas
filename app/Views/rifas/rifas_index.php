@@ -23,6 +23,7 @@
                             <th>Costo</th>
                             <th>Premio</th>
                             <th>Fecha Sorteo</th>
+                            <th>Estado</th>
                             <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
@@ -55,6 +56,13 @@
                                     <?= $rifa["descripcion"]; ?>
                                 </td>
                                 <td><?= $rifa["fecha_sorteo"]; ?></td>
+                                <td>
+                                    <?php if (rifa_terminada_por_id($rifa['id'])) { ?>
+                                        <span class="badge bg-danger">Cerrada</span>
+                                    <?php } else { ?>
+                                        <span class="badge bg-success">Activa</span>
+                                    <?php } ?>
+                                </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group shadow-sm">
                                         <a href="<?= base_url('rifas-dashboard/' . $rifa['id']) ?>"

@@ -22,7 +22,7 @@ class BoletoController extends BaseController
         $rifas = new RifasModel();
         $data['rifa'] = $rifas->find($rifa_id);
 
-        return view('boletos/index', $data);
+        return view('boletos/boletos_index', $data);
     }
 
     #GET Mostrar formulario para comprar boleto (VIEW)
@@ -42,6 +42,10 @@ class BoletoController extends BaseController
 
         if ($boleto['estado'] !== 'disponible') {
             return redirect()->back()->with('error', 'Este boleto no está disponible');
+        }
+
+        if (rifa_terminada_por_id($boleto['rifa_id'])) {
+            return redirect()->back()->with('error', 'La rifa ya ha finalizado');
         }
 
         $data = ["boleto" => $boleto];
@@ -65,6 +69,11 @@ class BoletoController extends BaseController
 
         if ($boleto['estado'] !== 'disponible') {
             return redirect()->back()->with('error', 'Este boleto no está disponible');
+        }
+
+        // Verificar si la rifa ya finalizó para evitar compras extemporáneas
+        if (rifa_terminada_por_id($boleto['rifa_id'])) {
+            return redirect()->back()->with('error', 'La rifa ya ha finalizado y no se pueden comprar más boletos');
         }
 
         $data = [

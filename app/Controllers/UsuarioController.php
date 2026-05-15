@@ -29,6 +29,10 @@ class UsuarioController extends BaseController
             return seguridad();
         }
 
+        // Solo admin y trabajador pueden ver la lista de todos los usuarios
+        if (seguridad(['admin', 'trabajador'])) {
+            return seguridad();
+        }
 
         $model = new UsuarioModel();
 
@@ -263,7 +267,7 @@ class UsuarioController extends BaseController
             session()->set($data);
 
             if (session()->get("usuario.rol") === "cliente") {
-                return redirect()->to("/usuarios/" . session()->get("usuario.id"));
+                return redirect()->to("/rifas");
             } else {
                 return redirect()->to("/usuarios");
             }

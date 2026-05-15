@@ -119,22 +119,34 @@
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="/usuarios" class="nav-link <?= url_is('usuarios*') ? 'active' : '' ?>">
-                        <i class="bi bi-grid-1x2-fill"></i>
-                        <span>Usuarios</span>
-                    </a>
+                    <?php if (session()->get('usuario.rol') === 'cliente'): ?>
+                        <a href="/usuarios/<?= session()->get('usuario.id') ?>" class="nav-link <?= url_is('usuarios/' . session()->get('usuario.id')) ? 'active' : '' ?>">
+                            <i class="bi bi-person-fill"></i>
+                            <span>Perfil</span>
+                        </a>
+                    <?php else: ?>
+                        <a href="/usuarios" class="nav-link <?= url_is('usuarios*') ? 'active' : '' ?>">
+                            <i class="bi bi-grid-1x2-fill"></i>
+                            <span>Usuarios</span>
+                        </a>
+                    <?php endif; ?>
                 </li>
-                <!--Detección de rol para redirigir al catálogo o dashboard-->
                 <li class="nav-item">
-                    <?php
-                    $rifasUrl = (session()->get('usuario.rol') === 'cliente') ? '/rifas' : '/rifas-dashboard';
-                    $isRifasActive = url_is('rifas*') || url_is('rifas-dashboard*');
-                    ?>
-                    <a href="<?= $rifasUrl ?>" class="nav-link <?= $isRifasActive ? 'active' : '' ?>">
-                        <i class="bi bi-bar-chart-line"></i>
+                    <a href="/rifas" class="nav-link <?= url_is('rifas') ? 'active' : '' ?>">
+                        <i class="bi bi-ticket-perforated"></i>
                         <span>Rifas</span>
                     </a>
                 </li>
+
+                <!-- Botón Dashboard: Solo para Admin y Trabajadores -->
+                <?php if (in_array(session()->get('usuario.rol'), ['admin', 'trabajador'])): ?>
+                    <li class="nav-item">
+                        <a href="/rifas-dashboard" class="nav-link <?= url_is('rifas-dashboard*') ? 'active' : '' ?>">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="bi bi-wallet2"></i>
@@ -166,8 +178,12 @@
 
                     <div class="ms-auto d-flex align-items-center">
                         <div class="me-3 text-end d-none d-sm-block">
-                            <p class="mb-0 fw-bold"><?= session()->get('usuario.nombre') ?></p>
-                            <small class="text-muted"><?= session()->get('usuario.email') ?></small>
+                            <p class="mb-0 fw-bold">
+                                <?= session()->get('usuario.nombre') ?>
+                            </p>
+                            <small class="text-muted">
+                                <?= session()->get('usuario.email') ?>
+                            </small>
                         </div>
                         <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=4e73df&color=fff"
                             class="rounded-circle" width="40">
@@ -176,7 +192,7 @@
             </nav>
 
             <div class="container-fluid p-0">
-                <?php if (!url_is('rifas')): ?>
+                <?php if (!url_is('rifas') && session()->get('usuario.rol') !== 'cliente'): ?>
                     <h2 class="fw-bold mb-4">Panel de Control</h2>
                 <?php endif; ?>
 

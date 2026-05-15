@@ -4,9 +4,19 @@
 
 <div class="container py-5">
     <div class="row mb-4">
-        <div class="col-lg-8 mx-auto text-center">
-            <h2 class="fw-bold">Resultados del Sorteo</h2>
-            <p class="text-muted">Ganadores y perdedores de la rifa <strong><?= esc($rifa['nombre']); ?></strong></p>
+        <div class="col-lg-10 mx-auto">
+            <div class="d-flex align-items-center mb-4">
+                <?php if (in_array(session()->get('usuario.rol'), ['admin', 'trabajador'])): ?>
+                    <a href="<?= base_url('rifas-dashboard') ?>" class="btn btn-outline-primary me-3 shadow-sm rounded-circle"
+                        style="width: 40px; height: 40px; padding: 7px;">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                <?php endif; ?>
+                <div>
+                    <h2 class="fw-bold mb-1">Resultados del Sorteo</h2>
+                    <p class="text-muted mb-0">Ganadores y perdedores de la rifa <strong><?= esc($rifa['nombre']); ?></strong></p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -18,16 +28,30 @@
                         <tr>
                             <th class="ps-4">Número de Boleto</th>
                             <th>Cliente ID</th>
+                            <th>Cliente</th>
                             <th>Estado</th>
                             <th>Resultado</th>
                             <th>Fecha de Compra</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($boletos as $boleto) { ?>
+                        <?php foreach ($boletos as $boleto) { 
+                            $usuarioModel = new \App\Models\UsuarioModel();
+                            $cliente = $usuarioModel->find($boleto['cliente_id']);
+                            $nombreCliente = 'Sin asignar';
+
+                            if ($cliente) {
+                                if (is_array($cliente) && array_key_exists('nombre', $cliente)) {
+                                    $nombreCliente = $cliente['nombre'];
+                                } elseif (is_object($cliente) && property_exists($cliente, 'nombre')) {
+                                    $nombreCliente = $cliente->nombre;
+                                }
+                            }
+                        ?>
                             <tr>
                                 <td class="ps-4 fw-bold"><?= esc($boleto['numero_boleto']); ?></td>
                                 <td><?= esc($boleto['cliente_id']); ?></td>
+                                <td><?= esc($nombreCliente); ?></td>
                                 <td>
                                     <?php if ($boleto['estado'] === 'pagado') { ?>
                                         <span class="badge bg-success">Pagado</span>
@@ -36,16 +60,19 @@
                                     <?php } ?>
                                 </td>
                                 <td>
-                                    <?php if ($boleto['resultado'] === 'primero') { ?>
+                                    <?php $res = trim(strtolower($boleto['resultado'] ?? '')); ?>
+                                    <?php if ($res === 'primero') { ?>
                                         <span class="badge bg-warning text-dark">🥇 Primer Lugar</span>
-                                    <?php } elseif ($boleto['resultado'] === 'segundo') { ?>
+                                    <?php } elseif ($res === 'segundo') { ?>
                                         <span class="badge bg-info text-dark">🥈 Segundo Lugar</span>
-                                    <?php } elseif ($boleto['resultado'] === 'tercero') { ?>
+                                    <?php } elseif ($res === 'tercero') { ?>
                                         <span class="badge bg-primary">🥉 Tercer Lugar</span>
-                                    <?php } elseif ($boleto['resultado'] === 'ninguno') { ?>
+                                    <?php } elseif ($res === 'ninguo') { ?>
+                                        <span class="badge bg-secondary">Sin Resultado</span>
+                                    <?php } elseif ($boleto['estado'] === 'pagado') { ?>
                                         <span class="badge bg-danger">Perdedor</span>
                                     <?php } else { ?>
-                                        <span class="badge bg-secondary">Disponible</span>
+                                        <span class="badge bg-light text-dark border">Disponible</span>
                                     <?php } ?>
                                 </td>
                                 <td><?= esc($boleto['fecha_compra']); ?></td>
@@ -55,12 +82,6 @@
                 </table>
             </div>
         </div>
-    </div>
-
-    <div class="mt-4 text-center">
-        <a href="<?= base_url('rifas-dashboard') ?>" class="btn btn-outline-primary px-4">
-            <i class="bi bi-arrow-left me-2"></i>Volver al Dashboard
-        </a>
     </div>
 </div>
 
